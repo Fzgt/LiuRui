@@ -1,61 +1,30 @@
-before_script:
-  - echo "Start pipeline"
-# 依赖镜像
-image: node:20.12.0
-# 阶段
-stages:
-  - install
-  - build
-  - deploy
-cache:
-  paths:
-    - node_modules/
-# variables:
-#   # 部署的服务器
-#   deployServer: work@public-data0005
-#   # 部署的服务器位置（相对ssh 根路径）
-#   deployDirectory: /home/work/lims-web/html_gitlab/
+name: CI Pipeline
 
-install-job:
-  tags:
-    - docker-runner
-  before_script:
-    - echo "Start install"
-  stage: install
-  script:
-    - npm install
-  after_script:
-    - echo "End of install"
+on:
+  push:
+    branches: ["**"]
 
-build-test-job:
-  tags:
-    - docker-runner
-  before_script:
-    - echo "Start build"
-  stage: build
-  script:
-    - npm run lint
-  after_script:
-    - echo "End of build"
-build-prod-job:
-  tags:
-    - docker-runner
-  before_script:
-    - echo "Start build"
-  stage: build
-  script:
-    - npm run build
-  after_script:
-    - echo "End of build"
+jobs:
+  Build:
+    runs-on: ubuntu-latest
 
-deploy-job:
-  tags:
-    - docker-runner
-  before_script:
-    - echo "Start deploy"
-  stage: deploy
-  script:
-    - scp -P 8222 -r dist/* $deployServer':'$deployDirectory
-  when: manual
-  after_script:
-    - echo "End of deploy"
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Config Environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: ">=18.17"
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: TS Lint
+        run: pnpm lint
+
+      - name: Build
+        run: pnpm build

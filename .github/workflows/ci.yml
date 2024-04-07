@@ -1,22 +1,39 @@
-name: Vercel Production Deployment
-env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+name: CI Pipeline
+
 on:
   push:
-    branches:
-      - main
+    branches: ["**"]
+
 jobs:
-  Deploy-Production:
+  Test-job:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Install Vercel CLI
-        run: npm install --global vercel@latest
-      - name: Pull Vercel Environment Information
-        # run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-        run: vercel pull --yes --environment=production --token=iCxubc2A0JOb4tKWnDfoVonp
-      - name: Build Project Artifacts
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --prod --token=iCxubc2A0JOb4tKWnDfoVonp
+      - uses: actions/checkout@v3
+      - name: Config Environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: ">=18.17"
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+      - name: Install dependencies
+        run: pnpm install
+      - name: TS Lint
+        run: pnpm lint
+
+  Build-job:
+    needs: Test-job
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Config Environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: ">=18.17"
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build
+        run: pnpm build

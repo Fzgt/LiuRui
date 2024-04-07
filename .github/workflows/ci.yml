@@ -5,26 +5,35 @@ on:
     branches: ["**"]
 
 jobs:
-  Build:
+  Test-job:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
-
       - name: Config Environment
         uses: actions/setup-node@v3
         with:
           node-version: ">=18.17"
-
       - uses: pnpm/action-setup@v3
         with:
           version: 8
-
       - name: Install dependencies
         run: pnpm install
-
       - name: TS Lint
         run: pnpm lint
 
+  Build-job:
+    needs: Test-job
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Config Environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: ">=18.17"
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+      - name: Install dependencies
+        run: pnpm install
       - name: Build
         run: pnpm build

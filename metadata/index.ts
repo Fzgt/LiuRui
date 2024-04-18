@@ -1,6 +1,6 @@
 /** 文本 */
-export const siteName = '风中告退'
-export const siteShortName = '风中告退'
+export const siteName = '名古屋'
+export const siteShortName = '名古屋'
 export const siteDescription = '记录回忆，知识和畅想的地方'
 
 /** 文档所在目录 */

@@ -1149,7 +1149,7 @@
     {
       "index": "💾 软件",
       "text": "💾 软件",
-      "collapsed": true,
+      "collapsed": false,
       "items": [
         {
           "index": "🛠 VS Code",

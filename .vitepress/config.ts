@@ -209,7 +209,7 @@ export default defineConfig({
       { text: '笔记', link: '/笔记/' },
       { text: '最近更新', link: '/toc' },
     ],
-    sidebar,
+    sidebar
   },
   markdown: {
     theme: {
